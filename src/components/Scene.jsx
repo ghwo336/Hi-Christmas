@@ -15,6 +15,7 @@ export default function Scene({ isInside, setIsInside }) {
   const targetCameraPos = useRef([0, 8, 20])
   const targetControlsTarget = useRef([0, 4, 0])
   const previousCameraState = useRef(null)
+  const isAnimating = useRef(false)
 
   // 실내/외에 따른 카메라 제약 설정
   useEffect(() => {
@@ -42,9 +43,9 @@ export default function Scene({ isInside, setIsInside }) {
     controlsRef.current.update()
   }, [isInside])
 
-  // 카메라 부드럽게 이동
+  // 카메라 부드럽게 이동 (애니메이션 중일 때만)
   useFrame(() => {
-    if (!cameraRef.current || !controlsRef.current) return
+    if (!cameraRef.current || !controlsRef.current || !isAnimating.current) return
 
     // 현재 위치에서 목표 위치로 부드럽게 이동
     cameraRef.current.position.x += (targetCameraPos.current[0] - cameraRef.current.position.x) * 0.05
@@ -61,9 +62,15 @@ export default function Scene({ isInside, setIsInside }) {
 
   const handleDoorClick = () => {
     // 안으로 들어가기
+    isAnimating.current = true
     targetCameraPos.current = [0, 5, 5]
     targetControlsTarget.current = [0, 2, -2]
     setIsInside(true)
+
+    // 2초 후 애니메이션 종료
+    setTimeout(() => {
+      isAnimating.current = false
+    }, 2000)
   }
 
   const handleTreeClick = () => {
@@ -71,6 +78,7 @@ export default function Scene({ isInside, setIsInside }) {
 
     // 현재 카메라 상태 저장
     if (!previousCameraState.current) {
+      isAnimating.current = true
       previousCameraState.current = {
         position: [...cameraRef.current.position.toArray()],
         target: [...controlsRef.current.target.toArray()],
@@ -86,6 +94,11 @@ export default function Scene({ isInside, setIsInside }) {
           targetCameraPos.current = previousCameraState.current.position
           targetControlsTarget.current = previousCameraState.current.target
           previousCameraState.current = null
+
+          // 복귀 애니메이션 후 2초 뒤 애니메이션 종료
+          setTimeout(() => {
+            isAnimating.current = false
+          }, 2000)
         }
       }, 3000)
     }
@@ -96,6 +109,7 @@ export default function Scene({ isInside, setIsInside }) {
 
     // 현재 카메라 상태 저장
     if (!previousCameraState.current) {
+      isAnimating.current = true
       previousCameraState.current = {
         position: [...cameraRef.current.position.toArray()],
         target: [...controlsRef.current.target.toArray()],
@@ -111,6 +125,11 @@ export default function Scene({ isInside, setIsInside }) {
           targetCameraPos.current = previousCameraState.current.position
           targetControlsTarget.current = previousCameraState.current.target
           previousCameraState.current = null
+
+          // 복귀 애니메이션 후 2초 뒤 애니메이션 종료
+          setTimeout(() => {
+            isAnimating.current = false
+          }, 2000)
         }
       }, 3000)
     }
@@ -119,8 +138,14 @@ export default function Scene({ isInside, setIsInside }) {
   // 밖으로 나가기 효과
   useEffect(() => {
     if (!isInside) {
+      isAnimating.current = true
       targetCameraPos.current = [0, 8, 20]
       targetControlsTarget.current = [0, 4, 0]
+
+      // 2초 후 애니메이션 종료
+      setTimeout(() => {
+        isAnimating.current = false
+      }, 2000)
     }
   }, [isInside])
 
