@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import ChristmasTree from './ChristmasTree'
 import Snowman from './Snowman'
 import Person from './Person'
+import Santa from './Santa'
 import CozyCabin from './CozyCabin'
 import OutdoorEnvironment from './OutdoorEnvironment'
 import SnowParticles from './SnowParticles'
@@ -211,6 +212,9 @@ export default function Scene({ isInside, setIsInside }) {
 
       {/* 오두막 내부 */}
       <CozyCabin />
+
+      {/* 산타 - 지붕 위에 앉아있음 */}
+      <Santa position={[0, 8, 0]} />
 
       {/* 크리스마스 트리 - 방 중앙 약간 왼쪽 */}
       <ChristmasTree position={[-2, 0, -2]} onClick={handleTreeClick} />
