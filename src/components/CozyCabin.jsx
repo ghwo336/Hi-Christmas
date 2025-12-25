@@ -1,16 +1,17 @@
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import {useRef} from 'react';
+import {useFrame} from '@react-three/fiber';
+import * as THREE from 'three';
 
 export default function CozyCabin() {
-  const fireRef = useRef()
+  const fireRef = useRef();
 
   useFrame((state) => {
     // 벽난로 불꽃 애니메이션
     if (fireRef.current) {
-      fireRef.current.material.emissiveIntensity = 1.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3
+      fireRef.current.material.emissiveIntensity =
+        1.5 + Math.sin(state.clock.elapsedTime * 3) * 0.3;
     }
-  })
+  });
 
   // 바닥
   const Floor = () => (
@@ -18,15 +19,7 @@ export default function CozyCabin() {
       <planeGeometry args={[15, 15]} />
       <meshStandardMaterial color="#5c4033" roughness={0.9} />
     </mesh>
-  )
-
-  // 벽 (양면)
-  const Wall = ({ position, rotation, width = 15, height = 8 }) => (
-    <mesh position={position} rotation={rotation} receiveShadow>
-      <planeGeometry args={[width, height]} />
-      <meshStandardMaterial color="#8b6f47" roughness={0.95} side={THREE.DoubleSide} />
-    </mesh>
-  )
+  );
 
   // 천장
   const Ceiling = () => (
@@ -34,38 +27,7 @@ export default function CozyCabin() {
       <planeGeometry args={[15, 15]} />
       <meshStandardMaterial color="#6b5644" roughness={0.9} />
     </mesh>
-  )
-
-  // 창문
-  const Window = ({ position }) => (
-    <group position={position}>
-      {/* 창틀 */}
-      <mesh>
-        <boxGeometry args={[1.5, 1.8, 0.15]} />
-        <meshStandardMaterial color="#3d2817" />
-      </mesh>
-      {/* 유리 */}
-      <mesh position={[0, 0, 0.05]}>
-        <planeGeometry args={[1.3, 1.6]} />
-        <meshStandardMaterial
-          color="#87ceeb"
-          transparent
-          opacity={0.4}
-          roughness={0.1}
-          metalness={0.3}
-        />
-      </mesh>
-      {/* 창문 십자가 */}
-      <mesh position={[0, 0, 0.1]}>
-        <boxGeometry args={[1.3, 0.05, 0.03]} />
-        <meshStandardMaterial color="#3d2817" />
-      </mesh>
-      <mesh position={[0, 0, 0.1]}>
-        <boxGeometry args={[0.05, 1.6, 0.03]} />
-        <meshStandardMaterial color="#3d2817" />
-      </mesh>
-    </group>
-  )
+  );
 
   // 벽난로
   const Fireplace = () => (
@@ -80,19 +42,93 @@ export default function CozyCabin() {
         <boxGeometry args={[2, 1.5, 0.5]} />
         <meshStandardMaterial color="#1a1a1a" />
       </mesh>
-      {/* 불꽃 */}
-      <mesh ref={fireRef} position={[0, -0.5, 0.4]}>
-        <coneGeometry args={[0.3, 0.8, 4]} />
+
+      {/* 장작 - 아래층 (가로 배치) */}
+      <mesh position={[-0.3, -1.1, 0.4]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.8, 8]} />
+        <meshStandardMaterial color="#3d2817" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.3, -1.1, 0.4]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.7, 8]} />
+        <meshStandardMaterial color="#2d1810" roughness={0.9} />
+      </mesh>
+
+      {/* 장작 - 중간층 (세로 배치) */}
+      <mesh position={[0, -1, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.9, 8]} />
+        <meshStandardMaterial color="#4a2511" roughness={0.9} />
+      </mesh>
+      <mesh
+        position={[-0.2, -0.95, 0.45]}
+        rotation={[Math.PI / 2, 0, Math.PI / 6]}
+      >
+        <cylinderGeometry args={[0.07, 0.07, 0.8, 8]} />
+        <meshStandardMaterial color="#3d2817" roughness={0.9} />
+      </mesh>
+
+      {/* 장작 - 위층 (타는 장작, 발광 효과) */}
+      <mesh
+        position={[0.15, -0.85, 0.5]}
+        rotation={[Math.PI / 2, 0, -Math.PI / 8]}
+      >
+        <cylinderGeometry args={[0.06, 0.06, 0.6, 8]} />
+        <meshStandardMaterial
+          color="#1a0a00"
+          emissive="#ff4500"
+          emissiveIntensity={0.3}
+          roughness={0.8}
+        />
+      </mesh>
+
+      {/* 불꽃 - 중앙 큰 불꽃 */}
+      <mesh ref={fireRef} position={[0, -0.5, 0.5]}>
+        <coneGeometry args={[0.35, 0.9, 4]} />
         <meshStandardMaterial
           color="#ff4500"
           emissive="#ff4500"
           emissiveIntensity={1.5}
+          transparent
+          opacity={0.8}
         />
       </mesh>
-      {/* 벽난로 빛 */}
-      <pointLight position={[0, -0.5, 0.5]} intensity={1.5} color="#ff6600" distance={8} />
+
+      {/* 불꽃 - 작은 불꽃들 */}
+      <mesh position={[-0.15, -0.7, 0.5]}>
+        <coneGeometry args={[0.2, 0.5, 4]} />
+        <meshStandardMaterial
+          color="#ff6600"
+          emissive="#ff6600"
+          emissiveIntensity={1.3}
+          transparent
+          opacity={0.7}
+        />
+      </mesh>
+      <mesh position={[0.2, -0.65, 0.48]}>
+        <coneGeometry args={[0.18, 0.45, 4]} />
+        <meshStandardMaterial
+          color="#ff5500"
+          emissive="#ff5500"
+          emissiveIntensity={1.4}
+          transparent
+          opacity={0.75}
+        />
+      </mesh>
+
+      {/* 벽난로 빛 - 더 밝게 */}
+      <pointLight
+        position={[0, -0.5, 0.6]}
+        intensity={2}
+        color="#ff6600"
+        distance={10}
+      />
+      <pointLight
+        position={[0, -0.8, 0.5]}
+        intensity={1.2}
+        color="#ff4500"
+        distance={6}
+      />
     </group>
-  )
+  );
 
   // 러그 (양탄자)
   const Rug = () => (
@@ -100,18 +136,18 @@ export default function CozyCabin() {
       <circleGeometry args={[3, 32]} />
       <meshStandardMaterial color="#8b0000" roughness={1} />
     </mesh>
-  )
+  );
 
   // 서까래 (천장 장식)
-  const Beam = ({ position, rotation = [0, 0, 0] }) => (
+  const Beam = ({position, rotation = [0, 0, 0]}) => (
     <mesh position={position} rotation={rotation}>
       <boxGeometry args={[0.3, 0.3, 15]} />
       <meshStandardMaterial color="#4a2511" roughness={0.9} />
     </mesh>
-  )
+  );
 
   // 작은 테이블
-  const Table = ({ position }) => (
+  const Table = ({position}) => (
     <group position={position}>
       {/* 테이블 상판 */}
       <mesh position={[0, 0.6, 0]}>
@@ -131,10 +167,10 @@ export default function CozyCabin() {
         </mesh>
       ))}
     </group>
-  )
+  );
 
   // 램프
-  const Lamp = ({ position }) => (
+  const Lamp = ({position}) => (
     <group position={position}>
       {/* 램프 받침 */}
       <mesh position={[0, 0, 0]}>
@@ -153,46 +189,116 @@ export default function CozyCabin() {
         />
       </mesh>
       {/* 램프 빛 */}
-      <pointLight position={[0, 0.2, 0]} intensity={0.4} color="#ffe4b5" distance={3} />
+      <pointLight
+        position={[0, 0.2, 0]}
+        intensity={0.4}
+        color="#ffe4b5"
+        distance={3}
+      />
     </group>
-  )
+  );
 
   return (
     <group>
-      {/* 방 구조 */}
-      <Floor />
-      <Wall position={[0, 4, -7.5]} rotation={[0, 0, 0]} />
-      <Wall position={[-7.5, 4, 0]} rotation={[0, Math.PI / 2, 0]} />
-      <Wall position={[7.5, 4, 0]} rotation={[0, -Math.PI / 2, 0]} />
+      {/* 실내 - 내부 벽들 (안에서만 보임, BackSide) */}
+      <group>
+        {/* 바닥 */}
+        <Floor />
 
-      {/* 앞벽 (문이 있는 쪽) - 내부에서 보이는 벽 */}
-      {/* 왼쪽 부분 */}
-      <mesh position={[-4.75, 4, 7.5]} receiveShadow>
-        <planeGeometry args={[5.5, 8]} />
-        <meshStandardMaterial color="#8b6f47" roughness={0.95} side={THREE.BackSide} />
-      </mesh>
-      {/* 오른쪽 부분 */}
-      <mesh position={[4.75, 4, 7.5]} receiveShadow>
-        <planeGeometry args={[5.5, 8]} />
-        <meshStandardMaterial color="#8b6f47" roughness={0.95} side={THREE.BackSide} />
-      </mesh>
-      {/* 문 위쪽 */}
-      <mesh position={[0, 6.5, 7.5]} receiveShadow>
-        <planeGeometry args={[3.5, 3]} />
-        <meshStandardMaterial color="#8b6f47" roughness={0.95} side={THREE.BackSide} />
-      </mesh>
+        {/* 천장 */}
+        <Ceiling />
 
-      {/* 문 공간 차단 (밖에서 안이 안 보이게) - 전체 벽 크기로 확장 */}
-      <mesh position={[0, 4, 7.5]} receiveShadow>
-        <planeGeometry args={[15, 8]} />
-        <meshStandardMaterial color="#000000" roughness={1} side={THREE.BackSide} opacity={1} />
-      </mesh>
+        {/* 뒷벽 (벽난로 벽) */}
+        <mesh position={[0, 4, -7.5]} receiveShadow>
+          <planeGeometry args={[15, 8]} />
+          <meshStandardMaterial
+            color="#8b6f47"
+            roughness={0.95}
+            side={THREE.BackSide}
+          />
+        </mesh>
 
-      <Ceiling />
+        {/* 왼쪽 벽 */}
+        <mesh position={[-7.5, 4, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[15, 8]} />
+          <meshStandardMaterial
+            color="#8b6f47"
+            roughness={0.95}
+            side={THREE.BackSide}
+          />
+        </mesh>
 
-      {/* 창문들 */}
-      <Window position={[-5, 4, -7.4]} />
-      <Window position={[5, 4, -7.4]} />
+        {/* 오른쪽 벽 */}
+        <mesh position={[7.5, 4, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+          <planeGeometry args={[15, 8]} />
+          <meshStandardMaterial
+            color="#8b6f47"
+            roughness={0.95}
+            side={THREE.BackSide}
+          />
+        </mesh>
+
+        {/* 앞벽 (문 벽) - 완전히 막힘 */}
+        <mesh position={[0, 4, 7.5]} receiveShadow>
+          <planeGeometry args={[15, 8]} />
+          <meshStandardMaterial
+            color="#8b6f47"
+            roughness={0.95}
+            side={THREE.BackSide}
+          />
+        </mesh>
+      </group>
+
+      {/* 외부 - 외벽들 (밖에서만 보임, 불투명) */}
+      <group>
+        {/* 뒷벽 외부 - 두꺼운 박스로 */}
+        <mesh position={[0, 4, -7.55]} receiveShadow castShadow>
+          <boxGeometry args={[15, 8, 0.3]} />
+          <meshStandardMaterial
+            color="#6b5644"
+            roughness={0.95}
+          />
+        </mesh>
+
+        {/* 왼쪽 벽 외부 - 두꺼운 박스로 */}
+        <mesh position={[-7.55, 4, 0]} receiveShadow castShadow>
+          <boxGeometry args={[0.3, 8, 15]} />
+          <meshStandardMaterial
+            color="#6b5644"
+            roughness={0.95}
+          />
+        </mesh>
+
+        {/* 오른쪽 벽 외부 - 두꺼운 박스로 */}
+        <mesh position={[7.55, 4, 0]} receiveShadow castShadow>
+          <boxGeometry args={[0.3, 8, 15]} />
+          <meshStandardMaterial
+            color="#6b5644"
+            roughness={0.95}
+          />
+        </mesh>
+
+        {/* 앞벽 외부 - 두꺼운 박스로 */}
+        <mesh position={[0, 4, 7.55]} receiveShadow castShadow>
+          <boxGeometry args={[15, 8, 0.3]} />
+          <meshStandardMaterial
+            color="#6b5644"
+            roughness={0.95}
+          />
+        </mesh>
+
+        {/* 문 (외부 장식) */}
+        <mesh position={[0, 3.5, 7.72]} castShadow>
+          <boxGeometry args={[2, 4, 0.05]} />
+          <meshStandardMaterial color="#4a2511" roughness={0.9} />
+        </mesh>
+
+        {/* 문 손잡이 */}
+        <mesh position={[0.6, 3.5, 7.75]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.05, 0.05, 0.15, 8]} />
+          <meshStandardMaterial color="#d4af37" metalness={0.8} roughness={0.2} />
+        </mesh>
+      </group>
 
       {/* 벽난로 */}
       <Fireplace />
@@ -209,5 +315,5 @@ export default function CozyCabin() {
       <Table position={[-4, 0, 2]} />
       <Lamp position={[-4, 0.65, 2]} />
     </group>
-  )
+  );
 }

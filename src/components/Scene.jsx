@@ -172,8 +172,8 @@ export default function Scene({ isInside, setIsInside }) {
       {/* 야외 환경 - 오두막 밖 */}
       <OutdoorEnvironment />
 
-      {/* 눈 내리는 효과 */}
-      <SnowParticles count={2000} />
+      {/* 눈 내리는 효과 - 밖에 있을 때만 */}
+      {!isInside && <SnowParticles count={2000} />}
 
       {/* 밤하늘 별들 */}
       <Stars
@@ -216,14 +216,19 @@ export default function Scene({ isInside, setIsInside }) {
       {/* 산타 - 지붕 위에 앉아있음 */}
       <Santa position={[0, 8, 0]} />
 
-      {/* 크리스마스 트리 - 방 중앙 약간 왼쪽 */}
-      <ChristmasTree position={[-2, 0, -2]} onClick={handleTreeClick} />
+      {/* 실내 오브젝트들 - 안에 있을 때만 렌더링 */}
+      {isInside && (
+        <>
+          {/* 크리스마스 트리 - 방 중앙 약간 왼쪽 */}
+          <ChristmasTree position={[-2, 0, -2]} onClick={handleTreeClick} />
 
-      {/* 사람 - 트리와 눈사람 사이 */}
-      <Person position={[0.5, 0, -1.5]} isInside={isInside} />
+          {/* 사람 - 트리와 눈사람 사이 */}
+          <Person position={[0.5, 0, -1.5]} isInside={isInside} />
 
-      {/* 눈사람 - 트리 옆 */}
-      <Snowman position={[2.5, 0, -1]} onClick={handleSnowmanClick} />
+          {/* 눈사람 - 트리 옆 */}
+          <Snowman position={[2.5, 0, -1]} onClick={handleSnowmanClick} />
+        </>
+      )}
 
       {/* 문 클릭 UI - 밖에 있을 때만 표시 */}
       <DoorClickUI
