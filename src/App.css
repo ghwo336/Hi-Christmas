@@ -90,6 +90,26 @@ canvas {
   box-shadow: 0 6px 24px rgba(255, 0, 0, 0.5);
 }
 
+.toggle-button {
+  background: rgba(100, 150, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 8px 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(100, 150, 255, 0.3);
+  pointer-events: auto;
+}
+
+.toggle-button:hover {
+  background: rgba(150, 180, 255, 1);
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(100, 150, 255, 0.5);
+}
+
 @media (max-width: 768px) {
   .title h1 {
     font-size: 1.8rem;
@@ -99,7 +119,7 @@ canvas {
     font-size: 0.9rem;
   }
 
-  .exit-button {
+  .exit-button, .toggle-button {
     font-size: 14px;
     padding: 6px 12px;
   }

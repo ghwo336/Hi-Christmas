@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import * as THREE from 'three'
 import Reindeer from './Reindeer'
 
-export default function OutdoorEnvironment() {
+export default function OutdoorEnvironment({ isNight = true }) {
   // 눈 덮인 땅
   const SnowGround = () => (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
@@ -177,8 +177,22 @@ export default function OutdoorEnvironment() {
     </group>
   )
 
+  // 하늘 배경 (낮일 때)
+  const SkyDome = () => (
+    <mesh>
+      <sphereGeometry args={[150, 32, 32]} />
+      <meshBasicMaterial
+        color={isNight ? "#0a1128" : "#87ceeb"}
+        side={THREE.BackSide}
+      />
+    </mesh>
+  )
+
   return (
     <group>
+      {/* 하늘 배경 */}
+      <SkyDome />
+
       {/* 눈 덮인 땅 */}
       <SnowGround />
 

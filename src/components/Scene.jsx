@@ -10,7 +10,7 @@ import OutdoorEnvironment from './OutdoorEnvironment'
 import SnowParticles from './SnowParticles'
 import DoorClickUI from './DoorClickUI'
 
-export default function Scene({ isInside, setIsInside }) {
+export default function Scene({ isInside, setIsInside, isNight }) {
   const cameraRef = useRef()
   const controlsRef = useRef()
   const targetCameraPos = useRef([0, 12, 35])
@@ -170,30 +170,32 @@ export default function Scene({ isInside, setIsInside }) {
       />
 
       {/* 야외 환경 - 오두막 밖 */}
-      <OutdoorEnvironment />
+      <OutdoorEnvironment isNight={isNight} />
 
       {/* 눈 내리는 효과 - 밖에 있을 때만 */}
       {!isInside && <SnowParticles count={2000} />}
 
-      {/* 밤하늘 별들 */}
-      <Stars
-        radius={100}
-        depth={50}
-        count={5000}
-        factor={4}
-        saturation={0}
-        fade
-        speed={0.5}
-      />
+      {/* 밤하늘 별들 - 밤일 때만 */}
+      {isNight && (
+        <Stars
+          radius={100}
+          depth={50}
+          count={5000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={0.5}
+        />
+      )}
 
-      {/* 주변 조명 - 실내는 따뜻하게, 야외는 어둡게 */}
-      <ambientLight intensity={0.25} color="#dde5f0" />
+      {/* 주변 조명 - 낮/밤에 따라 다르게 */}
+      <ambientLight intensity={isNight ? 0.25 : 0.8} color={isNight ? "#dde5f0" : "#fff5e6"} />
 
-      {/* 달빛 (야외 주 조명) */}
+      {/* 태양빛 (낮) / 달빛 (밤) */}
       <directionalLight
         position={[20, 30, 10]}
-        intensity={0.3}
-        color="#e0f0ff"
+        intensity={isNight ? 0.3 : 1.2}
+        color={isNight ? "#e0f0ff" : "#fffaf0"}
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
@@ -237,8 +239,8 @@ export default function Scene({ isInside, setIsInside }) {
         visible={!isInside}
       />
 
-      {/* 안개 효과 (야외 깊이감) */}
-      <fog attach="fog" args={['#0a1128', 25, 80]} />
+      {/* 안개 효과 (야외 깊이감) - 낮/밤에 따라 다르게 */}
+      <fog attach="fog" args={[isNight ? '#0a1128' : '#87ceeb', 25, 80]} />
     </>
   )
 }
