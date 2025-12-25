@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { OrbitControls, PerspectiveCamera, Stars } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import ChristmasTree from './ChristmasTree'
@@ -17,6 +17,8 @@ export default function Scene({ isInside, setIsInside, isNight }) {
   const targetControlsTarget = useRef([0, 4, 0])
   const previousCameraState = useRef(null)
   const isAnimating = useRef(false)
+  const [showWelcome, setShowWelcome] = useState(false)
+  const hasShownWelcome = useRef(false)
 
   // 실내/외에 따른 카메라 제약 설정
   useEffect(() => {
@@ -138,7 +140,8 @@ export default function Scene({ isInside, setIsInside, isNight }) {
 
   // 밖으로 나가기 효과
   useEffect(() => {
-    if (!isInside) {
+    // 초기 마운트 시에는 실행하지 않음 (hasShownWelcome로 체크)
+    if (!isInside && hasShownWelcome.current) {
       isAnimating.current = true
       targetCameraPos.current = [0, 12, 35]
       targetControlsTarget.current = [0, 4, 0]
@@ -149,6 +152,39 @@ export default function Scene({ isInside, setIsInside, isNight }) {
       }, 2000)
     }
   }, [isInside])
+
+  // 초기 환영 애니메이션 (산타 줌인)
+  useEffect(() => {
+    if (!hasShownWelcome.current && cameraRef.current && controlsRef.current) {
+      hasShownWelcome.current = true
+      console.log('환영 애니메이션 시작')
+
+      // 잠시 대기 후 산타에게 줌인
+      setTimeout(() => {
+        isAnimating.current = true
+        // 산타 위치로 줌인 (산타 위치: [0, 8, 0])
+        targetCameraPos.current = [0, 10, 15]
+        targetControlsTarget.current = [0, 8, 0]
+        setShowWelcome(true)
+        console.log('산타 줌인 시작')
+
+        // 2초 후 말풍선 숨기고 줌아웃
+        setTimeout(() => {
+          setShowWelcome(false)
+          console.log('말풍선 숨김, 줌아웃 시작')
+          // 즉시 줌아웃 시작
+          targetCameraPos.current = [0, 12, 35]
+          targetControlsTarget.current = [0, 4, 0]
+
+          // 줌아웃 애니메이션 완료 대기 (3초)
+          setTimeout(() => {
+            isAnimating.current = false
+            console.log('애니메이션 완료')
+          }, 3000)
+        }, 2000)
+      }, 500)
+    }
+  }, [])
 
   return (
     <>
@@ -216,7 +252,7 @@ export default function Scene({ isInside, setIsInside, isNight }) {
       <CozyCabin />
 
       {/* 산타 - 지붕 위에 앉아있음 */}
-      <Santa position={[0, 8, 0]} />
+      <Santa position={[0, 8, 0]} showWelcome={showWelcome} />
 
       {/* 실내 오브젝트들 - 안에 있을 때만 렌더링 */}
       {isInside && (

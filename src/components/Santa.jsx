@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Html } from '@react-three/drei'
 
-export default function Santa({ position = [0, 0, 0] }) {
+export default function Santa({ position = [0, 0, 0], showWelcome = false }) {
   const [showBubble, setShowBubble] = useState(false)
   const scale = 1.8 // 크기 1.8배 증가
 
@@ -281,6 +281,45 @@ export default function Santa({ position = [0, 0, 0] }) {
                 borderLeft: '15px solid transparent',
                 borderRight: '15px solid transparent',
                 borderTop: '15px solid rgba(255, 255, 255, 0.95)',
+              }}
+            />
+          </div>
+        </Html>
+      )}
+
+      {/* 환영 말풍선 - 초기 렌더링 시 */}
+      {showWelcome && (
+        <Html position={[0, 2.9 * scale, 0]} center distanceFactor={8}>
+          <div
+            style={{
+              background: 'rgba(255, 215, 0, 0.95)',
+              backdropFilter: 'blur(10px)',
+              border: '3px solid #ff6b6b',
+              borderRadius: '20px',
+              padding: '18px 32px',
+              color: '#c41e3a',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              boxShadow: '0 8px 32px rgba(255, 107, 107, 0.4)',
+              minWidth: '280px',
+              position: 'relative',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <div>하이아크 오두막에 오신것을 환영하네!!</div>
+            {/* 말풍선 꼬리 */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-15px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '0',
+                height: '0',
+                borderLeft: '15px solid transparent',
+                borderRight: '15px solid transparent',
+                borderTop: '15px solid rgba(255, 215, 0, 0.95)',
               }}
             />
           </div>
