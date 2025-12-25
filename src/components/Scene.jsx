@@ -13,7 +13,7 @@ import DoorClickUI from './DoorClickUI'
 export default function Scene({ isInside, setIsInside }) {
   const cameraRef = useRef()
   const controlsRef = useRef()
-  const targetCameraPos = useRef([0, 8, 20])
+  const targetCameraPos = useRef([0, 12, 35])
   const targetControlsTarget = useRef([0, 4, 0])
   const previousCameraState = useRef(null)
   const isAnimating = useRef(false)
@@ -140,7 +140,7 @@ export default function Scene({ isInside, setIsInside }) {
   useEffect(() => {
     if (!isInside) {
       isAnimating.current = true
-      targetCameraPos.current = [0, 8, 20]
+      targetCameraPos.current = [0, 12, 35]
       targetControlsTarget.current = [0, 4, 0]
 
       // 2초 후 애니메이션 종료
@@ -153,7 +153,7 @@ export default function Scene({ isInside, setIsInside }) {
   return (
     <>
       {/* 카메라 */}
-      <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 8, 20]} fov={60} />
+      <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 12, 35]} fov={60} />
       <OrbitControls
         ref={controlsRef}
         makeDefault
