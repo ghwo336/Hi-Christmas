@@ -4,7 +4,8 @@
       "Bash(npm create:*)",
       "Bash(yes:*)",
       "Bash(npm install)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []

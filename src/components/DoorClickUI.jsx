@@ -19,7 +19,7 @@ export default function DoorClickUI({ position, onClick, visible = true }) {
     <group ref={groupRef} position={position}>
       {/* 3D 클릭 아이콘 배경 */}
       <mesh onClick={onClick}>
-        <circleGeometry args={[0.4, 32]} />
+        <circleGeometry args={[1.0, 32]} />
         <meshBasicMaterial
           color="#ffffff"
           transparent
@@ -39,19 +39,19 @@ export default function DoorClickUI({ position, onClick, visible = true }) {
       >
         <div
           style={{
-            fontSize: '48px',
+            fontSize: '80px',
             cursor: 'pointer',
             textShadow: '0 0 10px rgba(0,0,0,0.5)',
             animation: 'pulse 1.5s ease-in-out infinite',
           }}
         >
-          👆
+          🚪✊
         </div>
       </Html>
 
       {/* 클릭 텍스트 */}
       <Html
-        position={[0, -0.6, 0]}
+        position={[0, -1.0, 0]}
         center
         distanceFactor={8}
         style={{
@@ -62,16 +62,16 @@ export default function DoorClickUI({ position, onClick, visible = true }) {
         <div
           style={{
             color: 'white',
-            fontSize: '16px',
+            fontSize: '24px',
             fontWeight: 'bold',
             textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            padding: '8px 16px',
-            borderRadius: '20px',
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            padding: '12px 24px',
+            borderRadius: '25px',
             whiteSpace: 'nowrap',
           }}
         >
-          클릭하여 입장
+          노크하기
         </div>
       </Html>
 
